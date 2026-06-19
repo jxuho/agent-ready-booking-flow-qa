@@ -1,20 +1,20 @@
 SERVICES = [
     {
         "slug": "standard-install",
-        "name": "Standard installation",
-        "description": "Simulated technician setup visit for agent-ready flow testing.",
+        "name": "Appliance installation",
+        "description": "Simulated appliance setup visit for agent-ready flow testing.",
         "base_price_cents": 12900,
     },
     {
         "slug": "repair-visit",
-        "name": "Repair visit",
-        "description": "Simulated diagnostic visit with restrictions and arrival window checks.",
+        "name": "Internet technician visit",
+        "description": "Simulated diagnostic visit with access restrictions and arrival window checks.",
         "base_price_cents": 9900,
     },
     {
         "slug": "equipment-delivery",
-        "name": "Equipment delivery",
-        "description": "Simulated delivery flow with capacity and extra-fee slot examples.",
+        "name": "Large item pickup",
+        "description": "Simulated pickup flow with capacity and extra-fee slot examples.",
         "base_price_cents": 4900,
     },
 ]

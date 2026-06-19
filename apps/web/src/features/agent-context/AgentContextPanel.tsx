@@ -4,14 +4,15 @@ import { getServiceLabel } from "@/features/booking/constants";
 import { useBookingStore } from "@/features/booking/booking-store";
 
 export function AgentContextPanel() {
-  const { areaCheck, selectedSlot, serviceType, step } = useBookingStore();
+  const { availability, quoteSummary, selectedService, selectedSlot, step } = useBookingStore();
   const isSafeStop = step === "pre-confirmation";
   const context = {
     task: "Simulated service booking flow",
     currentStep: step,
-    selectedService: getServiceLabel(serviceType),
-    postalCode: areaCheck?.postalCode ?? null,
+    selectedService: getServiceLabel(selectedService),
+    postalCode: availability?.postalCode ?? null,
     selectedSlot: selectedSlot?.label ?? null,
+    quoteId: quoteSummary?.id ?? null,
     allowedActions: isSafeStop
       ? ["review-summary", "edit-previous-step", "end-eval"]
       : ["complete-current-step", "go-back", "inspect-restrictions"],

@@ -1,22 +1,4 @@
-import type { BookingStep, ServiceOption } from "@/features/booking/types";
-
-export const serviceOptions: ServiceOption[] = [
-  {
-    value: "standard-install",
-    label: "Standard installation",
-    description: "A simulated technician visit for setup and verification."
-  },
-  {
-    value: "repair-visit",
-    label: "Repair visit",
-    description: "A simulated diagnostic visit with service restrictions."
-  },
-  {
-    value: "equipment-delivery",
-    label: "Equipment delivery",
-    description: "A simulated delivery window without real logistics."
-  }
-];
+import type { BookingStep, ServiceType } from "@/features/booking/types";
 
 export const stepDefinitions: Array<{ id: BookingStep; label: string }> = [
   { id: "service-selection", label: "Service" },
@@ -26,6 +8,13 @@ export const stepDefinitions: Array<{ id: BookingStep; label: string }> = [
   { id: "pre-confirmation", label: "Pre-confirmation" }
 ];
 
-export function getServiceLabel(serviceType?: string) {
-  return serviceOptions.find((option) => option.value === serviceType)?.label ?? "Not selected";
+export function getServiceLabel(service?: ServiceType) {
+  return service?.name ?? "Not selected";
+}
+
+export function formatCurrency(cents: number, currency = "USD") {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency
+  }).format(cents / 100);
 }

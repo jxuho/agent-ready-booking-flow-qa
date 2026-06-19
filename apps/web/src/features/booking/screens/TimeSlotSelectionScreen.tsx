@@ -4,21 +4,22 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { RadioGroup, RadioOption } from "@/components/ui/radio-group";
+import { formatCurrency } from "@/features/booking/constants";
 import { useBookingStore } from "@/features/booking/booking-store";
-import { listTimeSlots } from "@/lib/api";
+import { fetchTimeSlots } from "@/lib/api";
 
 export function TimeSlotSelectionScreen() {
-  const { areaCheck, selectedSlot, selectSlot, serviceType, setStep } = useBookingStore();
-  const postalCode = areaCheck?.postalCode ?? "";
+  const { availability, selectedService, selectedSlot, selectSlot, setStep } = useBookingStore();
+  const postalCode = availability?.postalCode ?? "";
 
   const slotsQuery = useQuery({
-    queryKey: ["time-slots", postalCode, serviceType],
+    queryKey: ["time-slots", postalCode, selectedService?.id],
     queryFn: () =>
-      listTimeSlots({
+      fetchTimeSlots({
         postalCode,
-        serviceType: serviceType ?? "standard-install"
+        serviceId: selectedService?.id ?? 0
       }),
-    enabled: Boolean(areaCheck?.available && serviceType)
+    enabled: Boolean(availability?.available && selectedService)
   });
 
   return (
@@ -38,6 +39,12 @@ export function TimeSlotSelectionScreen() {
             </Alert>
           )}
 
+          {slotsQuery.isError && (
+            <Alert variant="danger" role="alert">
+              Time slots could not be loaded. Return to area check or try again.
+            </Alert>
+          )}
+
           {slotsQuery.data && (
             <RadioGroup legend="Available service time slots" className="mt-1">
               {slotsQuery.data.map((slot) => (
@@ -46,11 +53,18 @@ export function TimeSlotSelectionScreen() {
                   name="slot"
                   value={slot.id}
                   label={slot.label}
-                  description={`Mode: ${slot.mode}. Window: ${slot.window}.${
-                    slot.available ? "" : ` Unavailable: ${slot.unavailableReason}.`
+                  descriptionId={`${slot.id}-details`}
+                  description={`Mode: ${slot.mode}. Window: ${slot.window}. ${
+                    slot.extraFeeCents > 0
+                      ? `Extra fee: ${formatCurrency(slot.extraFeeCents)}.`
+                      : "No extra fee."
+                  } ${
+                    slot.available ? "" : `Unavailable: ${slot.unavailableReason ?? "Not selectable"}.`
                   }`}
                   disabled={!slot.available}
                   checked={selectedSlot?.id === slot.id}
+                  aria-checked={selectedSlot?.id === slot.id}
+                  aria-describedby={`${slot.id}-details`}
                   onChange={() => {
                     if (slot.available) {
                       selectSlot(slot);
@@ -58,6 +72,8 @@ export function TimeSlotSelectionScreen() {
                   }}
                   data-agent-slot-id={slot.id}
                   data-agent-slot-available={String(slot.available)}
+                  data-agent-slot-selected={String(selectedSlot?.id === slot.id)}
+                  data-agent-extra-fee-cents={slot.extraFeeCents}
                 />
               ))}
             </RadioGroup>

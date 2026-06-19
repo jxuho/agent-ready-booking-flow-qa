@@ -1,63 +1,71 @@
 import { create } from "zustand";
 import type {
-  AreaCheckResult,
-  BookingAcknowledgements,
+  AvailabilityResult,
   BookingStep,
+  QuoteSummary,
+  Restriction,
   ServiceType,
   TimeSlot
 } from "@/features/booking/types";
 
 type BookingState = {
   step: BookingStep;
-  serviceType?: ServiceType;
-  areaCheck?: AreaCheckResult;
+  selectedService?: ServiceType;
+  postalCode: string;
+  availability?: AvailabilityResult;
   selectedSlot?: TimeSlot;
-  acknowledgements: BookingAcknowledgements;
+  restrictions: Restriction[];
+  acceptedRestrictionCodes: string[];
+  quoteSummary?: QuoteSummary;
   setStep: (step: BookingStep) => void;
-  selectService: (serviceType: ServiceType) => void;
-  setAreaCheck: (areaCheck: AreaCheckResult) => void;
+  selectService: (service: ServiceType) => void;
+  setAvailability: (availability: AvailabilityResult) => void;
   selectSlot: (slot: TimeSlot) => void;
-  setAcknowledgement: (name: keyof BookingAcknowledgements, value: boolean) => void;
+  setRestrictions: (restrictions: Restriction[]) => void;
+  setAcceptedRestrictionCodes: (codes: string[]) => void;
+  setQuoteSummary: (quoteSummary: QuoteSummary) => void;
   resetFlow: () => void;
-};
-
-const initialAcknowledgements: BookingAcknowledgements = {
-  simulatedOnly: false,
-  noPayment: false,
-  stopBeforeConfirmation: false
 };
 
 export const useBookingStore = create<BookingState>((set) => ({
   step: "service-selection",
-  acknowledgements: initialAcknowledgements,
+  postalCode: "",
+  restrictions: [],
+  acceptedRestrictionCodes: [],
   setStep: (step) => set({ step }),
-  selectService: (serviceType) =>
+  selectService: (selectedService) =>
     set({
-      serviceType,
-      areaCheck: undefined,
+      selectedService,
+      postalCode: "",
+      availability: undefined,
       selectedSlot: undefined,
-      acknowledgements: initialAcknowledgements,
+      restrictions: [],
+      acceptedRestrictionCodes: [],
+      quoteSummary: undefined,
       step: "service-area"
     }),
-  setAreaCheck: (areaCheck) =>
+  setAvailability: (availability) =>
     set({
-      areaCheck,
-      selectedSlot: undefined
+      availability,
+      postalCode: availability.postalCode,
+      selectedSlot: undefined,
+      restrictions: [],
+      acceptedRestrictionCodes: [],
+      quoteSummary: undefined
     }),
-  selectSlot: (slot) => set({ selectedSlot: slot }),
-  setAcknowledgement: (name, value) =>
-    set((state) => ({
-      acknowledgements: {
-        ...state.acknowledgements,
-        [name]: value
-      }
-    })),
+  selectSlot: (slot) => set({ selectedSlot: slot, quoteSummary: undefined }),
+  setRestrictions: (restrictions) => set({ restrictions }),
+  setAcceptedRestrictionCodes: (acceptedRestrictionCodes) => set({ acceptedRestrictionCodes }),
+  setQuoteSummary: (quoteSummary) => set({ quoteSummary }),
   resetFlow: () =>
     set({
       step: "service-selection",
-      serviceType: undefined,
-      areaCheck: undefined,
+      selectedService: undefined,
+      postalCode: "",
+      availability: undefined,
       selectedSlot: undefined,
-      acknowledgements: initialAcknowledgements
+      restrictions: [],
+      acceptedRestrictionCodes: [],
+      quoteSummary: undefined
     })
 }));

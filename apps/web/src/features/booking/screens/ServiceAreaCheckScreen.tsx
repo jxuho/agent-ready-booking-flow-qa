@@ -9,25 +9,25 @@ import { Input } from "@/components/ui/input";
 import { getServiceLabel } from "@/features/booking/constants";
 import { areaCheckSchema, type AreaCheckFormData } from "@/features/booking/schemas";
 import { useBookingStore } from "@/features/booking/booking-store";
-import { checkServiceArea } from "@/lib/api";
+import { checkAvailability } from "@/lib/api";
 
 export function ServiceAreaCheckScreen() {
-  const { areaCheck, serviceType, setAreaCheck, setStep } = useBookingStore();
+  const { availability, selectedService, setAvailability, setStep } = useBookingStore();
   const form = useForm<AreaCheckFormData>({
     resolver: zodResolver(areaCheckSchema),
     defaultValues: {
-      postalCode: areaCheck?.postalCode ?? ""
+      postalCode: availability?.postalCode ?? ""
     }
   });
 
   const areaMutation = useMutation({
     mutationFn: (values: AreaCheckFormData) =>
-      checkServiceArea({
+      checkAvailability({
         postalCode: values.postalCode,
-        serviceType: serviceType ?? "standard-install"
+        serviceId: selectedService?.id ?? 0
       }),
     onSuccess: (result) => {
-      setAreaCheck(result);
+      setAvailability(result);
     }
   });
 
@@ -55,8 +55,8 @@ export function ServiceAreaCheckScreen() {
             aria-describedby="area-check-help"
           >
             <p id="area-check-help" className="text-sm text-muted-foreground">
-              Selected service: {getServiceLabel(serviceType)}. Supported test postal codes are
-              10001, 11201, and 60601.
+              Selected service: {getServiceLabel(selectedService)}. Supported test postal codes
+              include 10001, 11201, 60601, and 94105. Postal code 99999 is unavailable.
             </p>
 
             <div className="grid gap-2">
@@ -93,25 +93,44 @@ export function ServiceAreaCheckScreen() {
             </div>
           </form>
 
-          {areaCheck && (
+          {areaMutation.isError && (
+            <Alert className="mt-5" variant="danger" role="alert">
+              Availability could not be checked. Verify the API is running or try again.
+            </Alert>
+          )}
+
+          {availability && (
             <Alert
               className="mt-5"
-              variant={areaCheck.available ? "success" : "danger"}
-              role="status"
+              variant={
+                availability.available
+                  ? availability.partiallyRestricted
+                    ? "warning"
+                    : "success"
+                  : "danger"
+              }
+              role={availability.available ? "status" : "alert"}
               data-testid="availability-status"
-              data-agent-availability={areaCheck.available ? "supported" : "unsupported"}
+              data-agent-availability={
+                availability.available
+                  ? availability.partiallyRestricted
+                    ? "restricted"
+                    : "supported"
+                  : "unsupported"
+              }
             >
               <div className="flex gap-2">
-                {areaCheck.available ? (
+                {availability.available ? (
                   <CheckCircle2 aria-hidden="true" className="mt-0.5 h-5 w-5 text-accent" />
                 ) : (
                   <AlertCircle aria-hidden="true" className="mt-0.5 h-5 w-5 text-destructive" />
                 )}
                 <div>
-                  <p className="font-medium">{areaCheck.message}</p>
+                  <p className="font-medium">{availability.message}</p>
                   <p className="text-muted-foreground">
-                    Postal code: {areaCheck.postalCode}
-                    {areaCheck.city ? ` · Area: ${areaCheck.city}` : ""}
+                    Postal code: {availability.postalCode}
+                    {availability.city ? ` · Area: ${availability.city}` : ""}
+                    {availability.partiallyRestricted ? " · Restrictions apply" : ""}
                   </p>
                 </div>
               </div>
@@ -120,7 +139,7 @@ export function ServiceAreaCheckScreen() {
 
           <div className="mt-5">
             <Button
-              disabled={!areaCheck?.available}
+              disabled={!availability?.available}
               onClick={() => setStep("time-slot")}
               data-agent-action="continue-to-time-slots"
             >

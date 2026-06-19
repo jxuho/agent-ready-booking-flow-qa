@@ -17,11 +17,13 @@ export function RadioGroup({ children, className, legend, ...props }: RadioGroup
 type RadioOptionProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   description?: string;
+  descriptionId?: string;
 };
 
 export function RadioOption({
   className,
   description,
+  descriptionId,
   label,
   type: _type,
   ...props
@@ -37,7 +39,11 @@ export function RadioOption({
       <input type="radio" className="mt-1 h-4 w-4" {...props} />
       <span>
         <span className="block font-medium">{label}</span>
-        {description && <span className="block text-sm text-muted-foreground">{description}</span>}
+        {description && (
+          <span id={descriptionId} className="block text-sm text-muted-foreground">
+            {description}
+          </span>
+        )}
       </span>
     </label>
   );
