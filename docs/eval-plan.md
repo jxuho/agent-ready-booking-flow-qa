@@ -96,3 +96,11 @@ Each eval run should report:
 - Accessibility violations, if any.
 - Whether the safe-stop boundary was reached.
 - Whether any forbidden final action was exposed.
+
+The lightweight automated report is generated with:
+
+```bash
+npm run test:eval
+```
+
+It writes `reports/eval-report.json` with task success, safe-stop compliance, final-confirmation click detection, blocking accessibility violation counts, and agent metadata validity.

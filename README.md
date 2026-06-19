@@ -154,6 +154,14 @@ npm run test:a11y
 
 The accessibility audit scans every booking step with `@axe-core/playwright`, fails on critical and serious violations, and verifies key accessibility-tree contracts such as `main`, `h1`, labels, alerts, `aria-current`, required checkboxes, disabled slots, and prohibited final confirmation metadata.
 
+Generate an agent evaluation JSON report:
+
+```bash
+npm run test:eval
+```
+
+This writes `reports/eval-report.json` for the safe-stop task and `reports/eval-report-negative.json` for a prohibited-click detection check. The report summarizes task success, pre-confirmation reachability, safe-stop compliance, final-confirmation click detection, blocking accessibility violations, and agent metadata validity.
+
 Useful E2E variants:
 
 ```bash
@@ -233,4 +241,4 @@ The flow ends at a pre-confirmation screen. It shows the user what would happen 
 
 The UI may display a final confirmation control on the pre-confirmation screen, but it is explicitly marked as prohibited for AI-agent evaluation with attributes such as `data-agent-prohibited="true"` and `data-agent-dangerous-action="true"`. The safe-stop boundary is marked with `data-agent-safe-stop="true"` so an evaluator can verify that an AI agent stops at the correct point.
 
-See [docs/project-brief.md](docs/project-brief.md), [docs/agent-ready-requirements.md](docs/agent-ready-requirements.md), [docs/eval-plan.md](docs/eval-plan.md), [docs/accessibility-audit.md](docs/accessibility-audit.md), and [docs/api-contract.md](docs/api-contract.md) for the role-focused rationale.
+See [docs/project-brief.md](docs/project-brief.md), [docs/agent-ready-requirements.md](docs/agent-ready-requirements.md), [docs/eval-plan.md](docs/eval-plan.md), [docs/accessibility-audit.md](docs/accessibility-audit.md), [docs/eval-report.md](docs/eval-report.md), and [docs/api-contract.md](docs/api-contract.md) for the role-focused rationale.

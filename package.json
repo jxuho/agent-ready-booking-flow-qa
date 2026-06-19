@@ -17,6 +17,7 @@
     "test:web": "npm --workspace apps/web run build",
     "test:api": "python3 -m pytest apps/api/tests",
     "test:a11y": "playwright test e2e/accessibility.spec.ts",
+    "test:eval": "playwright test e2e/eval-report.spec.ts --project=chromium",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
