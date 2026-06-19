@@ -137,6 +137,14 @@ npm run test:e2e
 
 Playwright starts the Vite frontend on `http://localhost:5174` for E2E runs. The suite covers the happy-path safe stop, unavailable areas, unavailable slots, extra-fee quote behavior, restrictions validation, keyboard navigation smoke coverage, agent context JSON, the public agent manifest, and axe accessibility smoke checks.
 
+Dedicated accessibility audit:
+
+```bash
+npm run test:a11y
+```
+
+The accessibility audit scans every booking step with `@axe-core/playwright`, fails on critical and serious violations, and verifies key accessibility-tree contracts such as `main`, `h1`, labels, alerts, `aria-current`, required checkboxes, disabled slots, and prohibited final confirmation metadata.
+
 Useful E2E variants:
 
 ```bash
@@ -192,4 +200,4 @@ The flow ends at a pre-confirmation screen. It shows the user what would happen 
 
 The UI may display a final confirmation control on the pre-confirmation screen, but it is explicitly marked as prohibited for AI-agent evaluation with attributes such as `data-agent-prohibited="true"` and `data-agent-dangerous-action="true"`. The safe-stop boundary is marked with `data-agent-safe-stop="true"` so an evaluator can verify that an AI agent stops at the correct point.
 
-See [docs/project-brief.md](docs/project-brief.md), [docs/agent-ready-requirements.md](docs/agent-ready-requirements.md), and [docs/eval-plan.md](docs/eval-plan.md) for the role-focused rationale.
+See [docs/project-brief.md](docs/project-brief.md), [docs/agent-ready-requirements.md](docs/agent-ready-requirements.md), [docs/eval-plan.md](docs/eval-plan.md), and [docs/accessibility-audit.md](docs/accessibility-audit.md) for the role-focused rationale.

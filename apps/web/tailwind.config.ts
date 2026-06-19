@@ -27,7 +27,7 @@ const config: Config = {
           foreground: "hsl(0 0% 100%)"
         },
         accent: {
-          DEFAULT: "hsl(145 36% 39%)",
+          DEFAULT: "hsl(145 40% 34%)",
           foreground: "hsl(0 0% 100%)"
         }
       },

@@ -1,4 +1,3 @@
-import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
 type AgentContext = {
@@ -313,16 +312,4 @@ test("public agent manifest is valid", async ({ request }) => {
   expect(manifest.recommendedSelectors.agentContextJson).toBe(
     "script#agent-context[type='application/json']"
   );
-});
-
-test("initial page and pre-confirmation pass automated accessibility smoke checks", async ({ page }) => {
-  await page.goto("/");
-
-  const initialScan = await new AxeBuilder({ page }).disableRules(["color-contrast"]).analyze();
-  expect(initialScan.violations).toEqual([]);
-
-  await reachPreConfirmation(page);
-
-  const finalScan = await new AxeBuilder({ page }).disableRules(["color-contrast"]).analyze();
-  expect(finalScan.violations).toEqual([]);
 });
