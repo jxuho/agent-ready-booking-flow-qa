@@ -9,8 +9,16 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.coverage
+htmlcov/
+.DS_Store
+.python-version
 .env
 .env.local
+.env.*
+!.env.example
+!apps/api/.env.example
+!apps/web/.env.example
 *.pyc
 *.tsbuildinfo
 postgres_data/

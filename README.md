@@ -1,5 +1,7 @@
 # Agent-ready Booking Flow QA
 
+[![CI](https://github.com/jxuho/agent-ready-booking-flow-qa/actions/workflows/ci.yml/badge.svg)](https://github.com/jxuho/agent-ready-booking-flow-qa/actions/workflows/ci.yml)
+
 A web QA/eval testbed for AI agents navigating a service booking flow and stopping before final confirmation.
 
 ## Why This Project Exists
@@ -89,6 +91,8 @@ The test suite checks both normal product behavior and agent-evaluation behavior
 - Backend API tests cover health, services, availability, slots, restrictions, quote calculation, confirm-attempt safety behavior, and validation errors.
 - Eval report tests generate JSON results for a passing safe-stop run and a negative prohibited-click run.
 - Safe-stop tests assert that the agent reaches pre-confirmation and does not click final confirmation in the normal task.
+
+GitHub Actions runs a CI workflow on pushes to `main` and pull requests. It installs frontend and backend dependencies, typechecks and builds the React app, runs Playwright browser tests, runs Ruff and Pytest for the FastAPI app, and verifies Alembic migrations against a PostgreSQL service container. Backend unit tests use SQLite in memory for speed; local development remains PostgreSQL-first.
 
 ## Example Eval Result
 
@@ -199,6 +203,7 @@ Useful docs:
 - [Accessibility audit](docs/accessibility-audit.md)
 - [Eval report](docs/eval-report.md)
 - [API contract](docs/api-contract.md)
+- [Testing strategy](docs/testing-strategy.md)
 
 ## What This Demonstrates
 

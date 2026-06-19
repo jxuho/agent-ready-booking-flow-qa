@@ -22,7 +22,7 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
     "test:e2e:ui": "playwright test --ui",
-    "lint": "npm --workspace apps/web run lint && python3 -m ruff check apps/api/app apps/api/tests"
+    "lint": "npm --workspace apps/web run lint && python3 -m ruff check apps/api/alembic apps/api/app apps/api/tests"
   },
   "workspaces": [
     "apps/web"
