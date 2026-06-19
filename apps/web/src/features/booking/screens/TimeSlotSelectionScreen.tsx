@@ -37,6 +37,10 @@ export function TimeSlotSelectionScreen() {
           <h1 id="time-slot-heading" className="text-2xl font-semibold">
             Select a delivery or visit time slot
           </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+            Available slots are selectable radio controls. Fully booked slots remain visible but
+            disabled for accessibility and eval clarity.
+          </p>
         </CardHeader>
         <CardContent>
           {slotsQuery.isLoading && (
@@ -52,7 +56,7 @@ export function TimeSlotSelectionScreen() {
             </Alert>
           )}
 
-          {slotsQuery.data && (
+          {slotsQuery.data && slotsQuery.data.length > 0 && (
             <RadioGroup legend="Available service time slots" className="mt-1">
               {slotsQuery.data.map((slot) => {
                 const detailsId = `${slot.id}-details`;
@@ -101,6 +105,7 @@ export function TimeSlotSelectionScreen() {
                     data-agent-slot-selected={String(selectedSlot?.id === slot.id)}
                     data-agent-extra-fee-cents={slot.extraFeeCents}
                     data-agent-risk={slot.extraFeeCents > 0 ? "medium" : "low"}
+                    className="shadow-panel"
                   >
                     {slot.extraFeeCents > 0 && (
                       <Badge id={feeBadgeId} variant="warning" className="mt-2">
@@ -116,6 +121,13 @@ export function TimeSlotSelectionScreen() {
                 );
               })}
             </RadioGroup>
+          )}
+
+          {slotsQuery.data?.length === 0 && (
+            <Alert role="status">
+              No simulated slots are available for this service area. Return to area check and try
+              another postal code.
+            </Alert>
           )}
 
           <div className="mt-5 flex flex-wrap gap-3">

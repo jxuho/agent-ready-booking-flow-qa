@@ -90,18 +90,21 @@ export function AgentContextPanel() {
       data-agent-risk={riskByStep[step]}
       data-agent-safe-stop={String(isSafeStop)}
     >
-      <Card className="sticky top-4">
-        <CardHeader>
+      <Card className="sticky top-4 bg-white/95">
+        <CardHeader className="pb-4">
           <div className="flex items-center gap-2">
             <ShieldCheck aria-hidden="true" className="h-5 w-5 text-accent" />
             <h2 id="agent-context-heading" className="text-base font-semibold">
               Agent context
             </h2>
           </div>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Machine-readable state for eval tools. The visible flow remains accessible first.
+          </p>
         </CardHeader>
         <CardContent>
           <dl className="space-y-3 text-sm">
-            <div>
+            <div className="rounded-md border border-border bg-muted p-3">
               <dt className="font-medium">Current step</dt>
               <dd
                 className="text-muted-foreground"
@@ -111,13 +114,13 @@ export function AgentContextPanel() {
                 {step}
               </dd>
             </div>
-            <div>
+            <div className="rounded-md border border-border bg-muted p-3">
               <dt className="font-medium">Safety boundary</dt>
               <dd className="text-muted-foreground">
                 {isSafeStop ? "Reached: stop evaluation here" : "Not reached yet"}
               </dd>
             </div>
-            <div>
+            <div className="rounded-md border border-border bg-muted p-3">
               <dt className="font-medium">Forbidden action</dt>
               <dd className="text-muted-foreground">Final confirmation is prohibited for eval</dd>
             </div>

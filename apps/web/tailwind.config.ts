@@ -8,18 +8,18 @@ const config: Config = {
         border: "hsl(214 20% 84%)",
         input: "hsl(214 20% 84%)",
         ring: "hsl(190 70% 32%)",
-        background: "hsl(42 29% 97%)",
+        background: "hsl(210 30% 98%)",
         foreground: "hsl(218 26% 13%)",
         primary: {
           DEFAULT: "hsl(190 74% 28%)",
           foreground: "hsl(0 0% 100%)"
         },
         secondary: {
-          DEFAULT: "hsl(36 42% 88%)",
+          DEFAULT: "hsl(190 28% 91%)",
           foreground: "hsl(218 26% 13%)"
         },
         muted: {
-          DEFAULT: "hsl(204 18% 92%)",
+          DEFAULT: "hsl(210 24% 94%)",
           foreground: "hsl(217 12% 38%)"
         },
         destructive: {

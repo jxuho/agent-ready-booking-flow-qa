@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Alert } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -49,6 +50,9 @@ export function ServiceAreaCheckScreen() {
           <h1 id="service-area-heading" className="text-2xl font-semibold">
             Check service availability in your area
           </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+            The flow should continue only when the simulated service is available for the area.
+          </p>
         </CardHeader>
         <CardContent>
           <form
@@ -56,10 +60,21 @@ export function ServiceAreaCheckScreen() {
             onSubmit={form.handleSubmit(handleSubmit)}
             aria-describedby="area-check-help"
           >
-            <p id="area-check-help" className="text-sm text-muted-foreground">
-              Selected service: {getServiceLabel(selectedService)}. Supported test postal codes
-              include 10001, 11201, 60601, and 94105. Postal code 99999 is unavailable.
-            </p>
+            <div
+              id="area-check-help"
+              className="rounded-md border border-border bg-muted p-4 text-sm text-muted-foreground"
+            >
+              <p>
+                Selected service:{" "}
+                <span className="font-medium text-foreground">
+                  {getServiceLabel(selectedService)}
+                </span>
+              </p>
+              <p className="mt-1">
+                Supported test postal codes include 10001, 11201, 60601, and 94105. Postal code
+                99999 is unavailable.
+              </p>
+            </div>
 
             <div className="grid gap-2">
               <label htmlFor="postalCode" className="text-sm font-medium">
@@ -135,25 +150,50 @@ export function ServiceAreaCheckScreen() {
                   : "unavailable"
               }
             >
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 {availability.available ? (
-                  <CheckCircle2 aria-hidden="true" className="mt-0.5 h-5 w-5 text-accent" />
+                  <CheckCircle2 aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-accent" />
                 ) : (
-                  <AlertCircle aria-hidden="true" className="mt-0.5 h-5 w-5 text-destructive" />
+                  <AlertCircle
+                    aria-hidden="true"
+                    className="mt-0.5 h-5 w-5 shrink-0 text-destructive"
+                  />
                 )}
-                <div>
-                  <p className="font-medium">{availability.message}</p>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="font-medium">{availability.message}</p>
+                    <Badge
+                      variant={
+                        availability.available
+                          ? availability.partiallyRestricted
+                            ? "warning"
+                            : "success"
+                          : "danger"
+                      }
+                    >
+                      {availability.available
+                        ? availability.partiallyRestricted
+                          ? "Limited"
+                          : "Available"
+                        : "Unavailable"}
+                    </Badge>
+                  </div>
                   <p className="text-muted-foreground">
                     Postal code: {availability.postalCode}
                     {availability.city ? ` · Area: ${availability.city}` : ""}
                     {availability.partiallyRestricted ? " · Restrictions apply" : ""}
                   </p>
+                  {availability.restrictionsSummary?.length ? (
+                    <p className="mt-2 text-muted-foreground">
+                      Area restrictions: {availability.restrictionsSummary.join(", ")}
+                    </p>
+                  ) : null}
                 </div>
               </div>
             </Alert>
           )}
 
-          <div className="mt-5">
+          <div className="mt-5 flex flex-wrap items-center gap-3">
             <Button
               disabled={!availability?.available}
               onClick={() => setStep("time-slot")}
@@ -161,6 +201,11 @@ export function ServiceAreaCheckScreen() {
             >
               Continue to time slot selection
             </Button>
+            {!availability?.available && (
+              <span className="text-sm text-muted-foreground">
+                Check an available postal code before choosing a slot.
+              </span>
+            )}
           </div>
         </CardContent>
       </Card>

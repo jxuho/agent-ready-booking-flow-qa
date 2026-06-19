@@ -15,17 +15,19 @@ export function BookingFlow() {
       data-agent-flow="service-booking-eval"
       data-agent-current-step={step}
     >
-      <div className="overflow-hidden rounded-md border border-border bg-white shadow-panel">
-        <div className="px-5 py-4">
+      <div className="overflow-hidden rounded-lg border border-border bg-white shadow-panel">
+        <div className="grid gap-2 border-b border-border px-5 py-5 sm:px-6">
           <p className="text-sm font-medium text-muted-foreground">Service booking simulation</p>
-          <p className="text-2xl font-semibold">
-            Evaluate a safe booking flow
+          <p className="text-2xl font-semibold">Evaluate a safe booking flow</p>
+          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+            This project evaluates whether an AI agent can complete the flow and stop before
+            commitment.
           </p>
         </div>
         <StepIndicator currentStep={step} />
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 sm:mt-6">
         {step === "service-selection" && <ServiceSelectionScreen />}
         {step === "service-area" && <ServiceAreaCheckScreen />}
         {step === "time-slot" && <TimeSlotSelectionScreen />}

@@ -33,12 +33,12 @@ export function RadioOption({
   return (
     <label
       className={cn(
-        "flex min-h-20 items-start gap-3 rounded-md border border-border bg-white p-4 transition has-[:checked]:border-primary has-[:checked]:bg-muted",
+        "flex min-h-20 items-start gap-3 rounded-md border border-border bg-white p-4 transition hover:border-primary/50 has-[:checked]:border-primary has-[:checked]:bg-muted has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2",
         props.disabled && "cursor-not-allowed opacity-60",
         className
       )}
     >
-      <input type="radio" className="mt-1 h-4 w-4" {...props} />
+      <input type="radio" className="mt-1 h-4 w-4 accent-primary" {...props} />
       <span>
         <span className="block font-medium">{label}</span>
         {description && (

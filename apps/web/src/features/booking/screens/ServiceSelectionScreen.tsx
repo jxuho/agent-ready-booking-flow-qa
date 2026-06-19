@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -44,6 +44,9 @@ export function ServiceSelectionScreen() {
           <h1 id="service-selection-heading" className="text-2xl font-semibold">
             Select a simulated service
           </h1>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
+            Choose the service an AI agent should carry through the booking flow.
+          </p>
         </CardHeader>
         <CardContent>
           {servicesQuery.isLoading && (
@@ -59,14 +62,14 @@ export function ServiceSelectionScreen() {
             </Alert>
           )}
 
-          <form className="grid gap-4" onSubmit={form.handleSubmit(handleSubmit)}>
-            <div className="grid gap-2">
+          <form className="grid gap-5" onSubmit={form.handleSubmit(handleSubmit)}>
+            <div className="max-w-xl grid gap-2">
               <label htmlFor="serviceType" className="text-sm font-medium">
                 Service type
               </label>
               <select
                 id="serviceType"
-                className="min-h-10 rounded-md border border-input bg-white px-3 py-2 text-base"
+                className="min-h-10 rounded-md border border-input bg-white px-3 py-2 text-base transition focus:border-ring focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 data-agent-field="service-type"
                 data-agent-required="true"
                 required
@@ -98,15 +101,30 @@ export function ServiceSelectionScreen() {
               {servicesQuery.data?.map((option) => (
                 <div
                   key={option.id}
-                  className="rounded-md border border-border bg-muted p-3 text-sm"
+                  className="rounded-md border border-border bg-white p-4 text-sm shadow-panel"
                   data-agent-service-option={option.slug}
                   aria-label={`${option.name}: ${option.description}`}
                 >
-                  <h2 className="font-semibold">{option.name}</h2>
-                  <p className="mt-1 text-muted-foreground">{option.description}</p>
+                  <div className="flex items-start justify-between gap-3">
+                    <h2 className="font-semibold">{option.name}</h2>
+                    {Number(form.watch("serviceId")) === option.id && (
+                      <span className="inline-flex items-center gap-1 rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-accent">
+                        <CheckCircle2 aria-hidden="true" className="h-3.5 w-3.5" />
+                        Selected
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-2 leading-6 text-muted-foreground">{option.description}</p>
+                  <p className="mt-3 text-xs font-medium text-muted-foreground">
+                    Simulated base price: ${(option.basePriceCents / 100).toFixed(2)}
+                  </p>
                 </div>
               ))}
             </div>
+
+            {servicesQuery.data?.length === 0 && (
+              <Alert role="status">No simulated services are available yet.</Alert>
+            )}
 
             <Button
               type="submit"
