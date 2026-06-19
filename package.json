@@ -9,6 +9,8 @@
     "dev:db": "docker compose up -d db",
     "dev:web": "npm --workspace apps/web run dev",
     "dev:api": "python3 -m uvicorn app.main:app --reload --app-dir apps/api",
+    "api:migrate": "cd apps/api && alembic upgrade head",
+    "api:seed": "cd apps/api && python3 -m app.seed.load",
     "build:web": "npm --workspace apps/web run build",
     "typecheck": "npm --workspace apps/web run typecheck",
     "test": "npm run test:api && npm run test:web",

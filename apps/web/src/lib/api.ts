@@ -273,8 +273,12 @@ export async function createQuote(input: {
       serviceId: input.serviceId,
       postalCode: input.postalCode,
       slotId: input.slotId,
+      basePriceCents: service?.basePriceCents ?? 0,
+      extraFeeCents: slot?.extraFeeCents ?? 0,
       totalPriceCents: (service?.basePriceCents ?? 0) + (slot?.extraFeeCents ?? 0),
       currency: "USD",
+      summary:
+        "Pre-confirmation quote for QA/eval only. No real booking has been created.",
       safeStopRequired: true,
       confirmAllowed: false,
       safetyNotice:

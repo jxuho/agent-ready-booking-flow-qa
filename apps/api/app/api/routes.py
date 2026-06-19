@@ -27,12 +27,12 @@ router = APIRouter()
 
 
 @router.get("/health", response_model=HealthRead, response_model_by_alias=True)
-def health() -> HealthRead:
+async def health() -> HealthRead:
     return HealthRead(status="ok", safe_stop_enforced=True)
 
 
 @router.get("/api/services", response_model=list[ServiceTypeRead], response_model_by_alias=True)
-def services(db: Session = Depends(get_db)) -> list[ServiceTypeRead]:
+async def services(db: Session = Depends(get_db)) -> list[ServiceTypeRead]:
     return list_services(db)
 
 
@@ -41,7 +41,7 @@ def services(db: Session = Depends(get_db)) -> list[ServiceTypeRead]:
     response_model=AvailabilityRead,
     response_model_by_alias=True,
 )
-def availability_check(
+async def availability_check(
     payload: AvailabilityCheckRequest,
     db: Session = Depends(get_db),
 ) -> AvailabilityRead:
@@ -49,7 +49,7 @@ def availability_check(
 
 
 @router.get("/api/slots", response_model=list[TimeSlotRead], response_model_by_alias=True)
-def slots(
+async def slots(
     service_id: int = Query(gt=0),
     postal_code: str = Query(min_length=5, max_length=5, pattern=r"^\d{5}$"),
     db: Session = Depends(get_db),
@@ -62,7 +62,7 @@ def slots(
     response_model=list[RestrictionRead],
     response_model_by_alias=True,
 )
-def restrictions(
+async def restrictions(
     service_id: int = Query(gt=0),
     postal_code: str = Query(min_length=5, max_length=5, pattern=r"^\d{5}$"),
     db: Session = Depends(get_db),
@@ -76,7 +76,7 @@ def restrictions(
     response_model_by_alias=True,
     status_code=status.HTTP_201_CREATED,
 )
-def quote(payload: QuoteCreate, db: Session = Depends(get_db)) -> QuoteRead:
+async def quote(payload: QuoteCreate, db: Session = Depends(get_db)) -> QuoteRead:
     return create_quote(db, payload)
 
 
@@ -86,7 +86,7 @@ def quote(payload: QuoteCreate, db: Session = Depends(get_db)) -> QuoteRead:
     response_model_by_alias=True,
     status_code=status.HTTP_202_ACCEPTED,
 )
-def confirm_attempt(
+async def confirm_attempt(
     payload: ConfirmAttemptCreate,
     db: Session = Depends(get_db),
 ) -> ConfirmAttemptRead:

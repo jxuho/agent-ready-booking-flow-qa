@@ -57,18 +57,26 @@ def check_availability(db: Session, payload: AvailabilityCheckRequest) -> Availa
             partially_restricted=False,
             status="unavailable",
             message="Service is not available in this area.",
+            restrictions_summary=[],
             next_allowed_actions=["choose-different-postal-code", "end-eval"],
         )
 
-    available = area.status in {"available", "restricted"}
+    area_status = "limited" if area.status == "restricted" else area.status
+    available = area_status in {"available", "limited"}
+    restrictions_summary = [
+        restriction.label
+        for restriction in list_restriction_models(db, payload.service_id, payload.postal_code)
+        if restriction.postal_code == payload.postal_code
+    ]
     return AvailabilityRead(
         service_id=payload.service_id,
         postal_code=payload.postal_code,
         city=area.city,
         available=available,
-        partially_restricted=area.status == "restricted",
-        status=area.status,
+        partially_restricted=area_status == "limited",
+        status=area_status,
         message=area.message,
+        restrictions_summary=restrictions_summary,
         next_allowed_actions=(
             ["review-restrictions", "select-time-slot"] if available else ["choose-different-postal-code", "end-eval"]
         ),
@@ -84,7 +92,7 @@ def list_slots(db: Session, service_id: int, postal_code: str) -> list[TimeSlotR
     slots = db.scalars(
         select(TimeSlot)
         .where(TimeSlot.service_type_id == service_id, TimeSlot.postal_code == postal_code)
-        .order_by(TimeSlot.window)
+        .order_by(TimeSlot.start_time)
     ).all()
     return [
         TimeSlotRead(
@@ -93,7 +101,10 @@ def list_slots(db: Session, service_id: int, postal_code: str) -> list[TimeSlotR
             postal_code=slot.postal_code,
             label=slot.label,
             mode=slot.mode,
+            start_time=slot.start_time,
+            end_time=slot.end_time,
             window=slot.window,
+            status=slot.status,
             available=slot.available,
             fully_booked=slot.fully_booked,
             extra_fee_cents=slot.extra_fee_cents,
@@ -143,12 +154,26 @@ def create_quote(db: Session, payload: QuoteCreate) -> QuoteRead:
     }
     acknowledged_codes = set(payload.acknowledged_restriction_codes)
     missing_codes = sorted(required_codes - acknowledged_codes)
+    if missing_codes:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "message": "Required restrictions must be accepted before creating a quote.",
+                "missingAcknowledgements": missing_codes,
+            },
+        )
+
+    base_price_cents = service.base_price_cents
+    extra_fee_cents = slot.extra_fee_cents
+    total_price_cents = base_price_cents + extra_fee_cents
 
     quote = BookingDraft(
         service_type_id=payload.service_id,
         postal_code=payload.postal_code,
         slot_id=payload.slot_id,
-        total_price_cents=service.base_price_cents + slot.extra_fee_cents,
+        base_price_cents=base_price_cents,
+        extra_fee_cents=extra_fee_cents,
+        total_price_cents=total_price_cents,
         currency="USD",
         safe_stop_required=True,
         confirm_allowed=False,
@@ -163,8 +188,15 @@ def create_quote(db: Session, payload: QuoteCreate) -> QuoteRead:
         service_id=quote.service_type_id,
         postal_code=quote.postal_code,
         slot_id=quote.slot_id,
+        base_price_cents=quote.base_price_cents,
+        extra_fee_cents=quote.extra_fee_cents,
         total_price_cents=quote.total_price_cents,
         currency=quote.currency,
+        summary=(
+            f"Pre-confirmation quote for {service.name} in {quote.postal_code}. "
+            f"Base price {base_price_cents} cents, extra fee {extra_fee_cents} cents, "
+            f"total {total_price_cents} cents. No real booking has been created."
+        ),
         safe_stop_required=quote.safe_stop_required,
         confirm_allowed=quote.confirm_allowed,
         safety_notice=quote.safety_notice,

@@ -1,6 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.db.base import Base
+from app.db.session import SessionLocal, engine
 from app.models.booking import Restriction, ServiceArea, ServiceType, TimeSlot
 from app.seed.data import AREA_STATUS_BY_POSTAL_CODE, GLOBAL_RESTRICTIONS, POSTAL_RESTRICTIONS, SERVICES, SLOT_TEMPLATES
 
@@ -40,6 +42,8 @@ def seed_reference_data(db: Session) -> None:
                         postal_code=postal_code,
                         label=slot_template["label"],
                         mode=slot_template["mode"],
+                        start_time=slot_template["start_time"],
+                        end_time=slot_template["end_time"],
                         window=slot_template["window"],
                         available=slot_template["available"],
                         fully_booked=slot_template["fully_booked"],
@@ -56,3 +60,13 @@ def seed_reference_data(db: Session) -> None:
                 db.add(Restriction(service_type_id=service.id, postal_code=postal_code, **restriction_data))
 
     db.commit()
+
+
+def main() -> None:
+    Base.metadata.create_all(bind=engine)
+    with SessionLocal() as db:
+        seed_reference_data(db)
+
+
+if __name__ == "__main__":
+    main()

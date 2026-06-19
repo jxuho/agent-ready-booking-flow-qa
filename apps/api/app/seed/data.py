@@ -21,9 +21,9 @@ SERVICES = [
 
 AREA_STATUS_BY_POSTAL_CODE = {
     "10001": ("New York", "available", "Service is available in this area."),
-    "11201": ("Brooklyn", "restricted", "Service is available with building-access restrictions."),
+    "11201": ("Brooklyn", "limited", "Service is available with building-access restrictions."),
     "60601": ("Chicago", "available", "Service is available in this area."),
-    "94105": ("San Francisco", "restricted", "Service is available with parking and call-ahead requirements."),
+    "94105": ("San Francisco", "limited", "Service is available with parking and call-ahead requirements."),
     "99999": ("Unsupported Area", "unavailable", "Service is not available in this area."),
 }
 
@@ -32,6 +32,8 @@ SLOT_TEMPLATES = [
         "suffix": "morning-delivery",
         "label": "Morning delivery, 9:00 AM to 11:00 AM",
         "mode": "delivery",
+        "start_time": "09:00",
+        "end_time": "11:00",
         "window": "9:00 AM to 11:00 AM",
         "available": True,
         "fully_booked": False,
@@ -42,6 +44,8 @@ SLOT_TEMPLATES = [
         "suffix": "afternoon-visit",
         "label": "Afternoon in-home visit, 1:00 PM to 3:00 PM",
         "mode": "visit",
+        "start_time": "13:00",
+        "end_time": "15:00",
         "window": "1:00 PM to 3:00 PM",
         "available": True,
         "fully_booked": False,
@@ -52,6 +56,8 @@ SLOT_TEMPLATES = [
         "suffix": "evening-delivery",
         "label": "Evening delivery, 5:00 PM to 7:00 PM",
         "mode": "delivery",
+        "start_time": "17:00",
+        "end_time": "19:00",
         "window": "5:00 PM to 7:00 PM",
         "available": False,
         "fully_booked": True,

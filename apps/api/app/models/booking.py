@@ -37,6 +37,10 @@ class ServiceArea(Base):
 
     service_type: Mapped[ServiceType] = relationship(back_populates="areas")
 
+    @property
+    def limited(self) -> bool:
+        return self.status == "limited"
+
 
 class TimeSlot(Base):
     __tablename__ = "time_slots"
@@ -46,6 +50,8 @@ class TimeSlot(Base):
     postal_code: Mapped[str] = mapped_column(String(5), index=True)
     label: Mapped[str] = mapped_column(String(160))
     mode: Mapped[str] = mapped_column(String(20))
+    start_time: Mapped[str] = mapped_column(String(20), default="")
+    end_time: Mapped[str] = mapped_column(String(20), default="")
     window: Mapped[str] = mapped_column(String(80))
     available: Mapped[bool] = mapped_column(Boolean, default=True)
     fully_booked: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -53,6 +59,10 @@ class TimeSlot(Base):
     unavailable_reason: Mapped[str | None] = mapped_column(String(160), nullable=True)
 
     service_type: Mapped[ServiceType] = relationship(back_populates="slots")
+
+    @property
+    def status(self) -> str:
+        return "available" if self.available and not self.fully_booked else "unavailable"
 
 
 class Restriction(Base):
@@ -67,6 +77,10 @@ class Restriction(Base):
     required_acknowledgement: Mapped[bool] = mapped_column(Boolean, default=True)
     severity: Mapped[str] = mapped_column(String(20), default="info")
 
+    @property
+    def required(self) -> bool:
+        return self.required_acknowledgement
+
 
 class BookingDraft(Base):
     __tablename__ = "booking_drafts"
@@ -75,6 +89,8 @@ class BookingDraft(Base):
     service_type_id: Mapped[int] = mapped_column(ForeignKey("service_types.id"))
     postal_code: Mapped[str] = mapped_column(String(5))
     slot_id: Mapped[str] = mapped_column(ForeignKey("time_slots.id"))
+    base_price_cents: Mapped[int] = mapped_column(Integer, default=0)
+    extra_fee_cents: Mapped[int] = mapped_column(Integer, default=0)
     total_price_cents: Mapped[int] = mapped_column(Integer)
     currency: Mapped[str] = mapped_column(String(3), default="USD")
     safe_stop_required: Mapped[bool] = mapped_column(Boolean, default=True)

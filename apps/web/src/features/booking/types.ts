@@ -23,8 +23,9 @@ export type AvailabilityResult = CheckAreaInput & {
   city: string | null;
   available: boolean;
   partiallyRestricted: boolean;
-  status: "available" | "restricted" | "unavailable" | string;
+  status: "available" | "limited" | "restricted" | "unavailable" | string;
   message: string;
+  restrictionsSummary?: string[];
   nextAllowedActions: string[];
 };
 
@@ -34,7 +35,10 @@ export type TimeSlot = {
   postalCode: string;
   label: string;
   mode: "delivery" | "visit";
+  startTime?: string;
+  endTime?: string;
   window: string;
+  status?: "available" | "unavailable";
   available: boolean;
   fullyBooked: boolean;
   extraFeeCents: number;
@@ -46,6 +50,7 @@ export type Restriction = {
   code: string;
   label: string;
   description: string;
+  required?: boolean;
   requiredAcknowledgement: boolean;
   severity: "info" | "warning" | "danger" | string;
 };
@@ -55,8 +60,11 @@ export type QuoteSummary = {
   serviceId: number;
   postalCode: string;
   slotId: string;
+  basePriceCents?: number;
+  extraFeeCents?: number;
   totalPriceCents: number;
   currency: string;
+  summary?: string;
   safeStopRequired: boolean;
   confirmAllowed: boolean;
   safetyNotice: string;
