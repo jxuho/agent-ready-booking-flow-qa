@@ -11,16 +11,16 @@ export function BookingFlow() {
 
   return (
     <section
-      aria-labelledby="booking-flow-heading"
+      aria-label="Service booking simulation"
       data-agent-flow="service-booking-eval"
       data-agent-current-step={step}
     >
       <div className="overflow-hidden rounded-md border border-border bg-white shadow-panel">
         <div className="px-5 py-4">
           <p className="text-sm font-medium text-muted-foreground">Service booking simulation</p>
-          <h2 id="booking-flow-heading" className="text-2xl font-semibold">
+          <p className="text-2xl font-semibold">
             Evaluate a safe booking flow
-          </h2>
+          </p>
         </div>
         <StepIndicator currentStep={step} />
       </div>

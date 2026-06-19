@@ -11,12 +11,12 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
           <div>
             <p className="text-sm font-medium text-muted-foreground">Portfolio QA testbed</p>
-            <h1 className="text-xl font-semibold">Agent-Ready Booking Flow QA</h1>
+            <p className="text-xl font-semibold">Agent-Ready Booking Flow QA</p>
           </div>
         </div>
       </header>
 
-      <main id="main-content" className="mx-auto max-w-6xl px-4 py-6">
+      <main id="main-content" className="mx-auto max-w-6xl px-4 py-6" data-agent-landmark="main">
         {children}
       </main>
 

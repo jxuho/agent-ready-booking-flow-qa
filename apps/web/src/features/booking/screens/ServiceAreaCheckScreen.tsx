@@ -40,13 +40,15 @@ export function ServiceAreaCheckScreen() {
       id="service-area-step"
       aria-labelledby="service-area-heading"
       data-agent-step="service-area"
+      data-agent-state="current"
+      data-agent-risk={availability?.available === false ? "medium" : "low"}
     >
       <Card>
         <CardHeader>
           <p className="text-sm font-medium text-muted-foreground">Step 2 of 5</p>
-          <h2 id="service-area-heading" className="text-2xl font-semibold">
+          <h1 id="service-area-heading" className="text-2xl font-semibold">
             Check service availability in your area
-          </h2>
+          </h1>
         </CardHeader>
         <CardContent>
           <form
@@ -67,6 +69,9 @@ export function ServiceAreaCheckScreen() {
                 id="postalCode"
                 inputMode="numeric"
                 data-agent-field="postal-code"
+                data-agent-required="true"
+                required
+                aria-required="true"
                 aria-invalid={Boolean(form.formState.errors.postalCode)}
                 aria-describedby={
                   form.formState.errors.postalCode ? "postal-code-error" : "area-check-help"
@@ -87,7 +92,11 @@ export function ServiceAreaCheckScreen() {
                 )}
                 Check service area availability
               </Button>
-              <Button variant="secondary" onClick={() => setStep("service-selection")}>
+              <Button
+                variant="secondary"
+                onClick={() => setStep("service-selection")}
+                data-agent-action="back-to-service-selection"
+              >
                 Back to service selection
               </Button>
             </div>
@@ -117,6 +126,13 @@ export function ServiceAreaCheckScreen() {
                     ? "restricted"
                     : "supported"
                   : "unsupported"
+              }
+              data-agent-state={
+                availability.available
+                  ? availability.partiallyRestricted
+                    ? "partially-available"
+                    : "available"
+                  : "unavailable"
               }
             >
               <div className="flex gap-2">

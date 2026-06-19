@@ -73,19 +73,22 @@ export function ConditionsReviewScreen() {
   }
 
   const restrictionError = form.formState.errors.acceptedRestrictionCodes?.message;
+  const watchedRestrictionCodes = form.watch("acceptedRestrictionCodes") ?? [];
 
   return (
     <section
       id="conditions-step"
       aria-labelledby="conditions-heading"
       data-agent-step="conditions"
+      data-agent-state="current"
+      data-agent-risk="medium"
     >
       <Card>
         <CardHeader>
           <p className="text-sm font-medium text-muted-foreground">Step 4 of 5</p>
-          <h2 id="conditions-heading" className="text-2xl font-semibold">
+          <h1 id="conditions-heading" className="text-2xl font-semibold">
             Review conditions and restrictions
-          </h2>
+          </h1>
         </CardHeader>
         <CardContent>
           <Alert>
@@ -135,9 +138,16 @@ export function ConditionsReviewScreen() {
                     <Checkbox
                       id={checkboxId}
                       value={restriction.code}
+                      aria-required={isRequired}
                       aria-invalid={hasError}
                       aria-describedby={hasError ? `conditions-error ${detailsId}` : detailsId}
                       data-agent-condition={restriction.code}
+                      data-agent-action="acknowledge-restriction"
+                      data-agent-state={
+                        watchedRestrictionCodes.includes(restriction.code)
+                          ? "accepted"
+                          : "not-accepted"
+                      }
                       {...form.register("acceptedRestrictionCodes")}
                     />
                     <span>
@@ -161,7 +171,11 @@ export function ConditionsReviewScreen() {
             )}
 
             <div className="mt-5 flex flex-wrap gap-3">
-              <Button variant="secondary" onClick={() => setStep("time-slot")}>
+              <Button
+                variant="secondary"
+                onClick={() => setStep("time-slot")}
+                data-agent-action="back-to-time-slot-selection"
+              >
                 Back to time slot selection
               </Button>
               <Button

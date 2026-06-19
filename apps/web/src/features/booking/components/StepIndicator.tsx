@@ -21,7 +21,9 @@ export function StepIndicator({ currentStep }: { currentStep: BookingStep }) {
                 isCurrent && "bg-white",
                 isComplete && "bg-secondary"
               )}
+              data-agent-step={step.id}
               data-agent-step-marker={step.id}
+              data-agent-state={isCurrent ? "current" : isComplete ? "complete" : "upcoming"}
             >
               <span className="block text-xs font-medium text-muted-foreground">
                 Step {index + 1}

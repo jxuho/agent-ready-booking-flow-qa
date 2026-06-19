@@ -35,13 +35,15 @@ export function ServiceSelectionScreen() {
       id="service-selection-step"
       aria-labelledby="service-selection-heading"
       data-agent-step="service-selection"
+      data-agent-state="current"
+      data-agent-risk="low"
     >
       <Card>
         <CardHeader>
           <p className="text-sm font-medium text-muted-foreground">Step 1 of 5</p>
-          <h2 id="service-selection-heading" className="text-2xl font-semibold">
+          <h1 id="service-selection-heading" className="text-2xl font-semibold">
             Select a simulated service
-          </h2>
+          </h1>
         </CardHeader>
         <CardContent>
           {servicesQuery.isLoading && (
@@ -66,6 +68,9 @@ export function ServiceSelectionScreen() {
                 id="serviceType"
                 className="min-h-10 rounded-md border border-input bg-white px-3 py-2 text-base"
                 data-agent-field="service-type"
+                data-agent-required="true"
+                required
+                aria-required="true"
                 aria-invalid={Boolean(form.formState.errors.serviceId)}
                 aria-describedby={
                   form.formState.errors.serviceId ? "service-type-error" : "service-type-help"
@@ -97,7 +102,7 @@ export function ServiceSelectionScreen() {
                   data-agent-service-option={option.slug}
                   aria-label={`${option.name}: ${option.description}`}
                 >
-                  <h3 className="font-semibold">{option.name}</h3>
+                  <h2 className="font-semibold">{option.name}</h2>
                   <p className="mt-1 text-muted-foreground">{option.description}</p>
                 </div>
               ))}

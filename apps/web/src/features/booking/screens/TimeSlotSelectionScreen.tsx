@@ -23,13 +23,19 @@ export function TimeSlotSelectionScreen() {
   });
 
   return (
-    <section id="time-slot-step" aria-labelledby="time-slot-heading" data-agent-step="time-slot">
+    <section
+      id="time-slot-step"
+      aria-labelledby="time-slot-heading"
+      data-agent-step="time-slot"
+      data-agent-state="current"
+      data-agent-risk="medium"
+    >
       <Card>
         <CardHeader>
           <p className="text-sm font-medium text-muted-foreground">Step 3 of 5</p>
-          <h2 id="time-slot-heading" className="text-2xl font-semibold">
+          <h1 id="time-slot-heading" className="text-2xl font-semibold">
             Select a delivery or visit time slot
-          </h2>
+          </h1>
         </CardHeader>
         <CardContent>
           {slotsQuery.isLoading && (
@@ -71,16 +77,28 @@ export function TimeSlotSelectionScreen() {
                     }
                   }}
                   data-agent-slot-id={slot.id}
+                  data-agent-state={
+                    !slot.available
+                      ? "unavailable"
+                      : selectedSlot?.id === slot.id
+                        ? "selected"
+                        : "available"
+                  }
                   data-agent-slot-available={String(slot.available)}
                   data-agent-slot-selected={String(selectedSlot?.id === slot.id)}
                   data-agent-extra-fee-cents={slot.extraFeeCents}
+                  data-agent-risk={slot.extraFeeCents > 0 ? "medium" : "low"}
                 />
               ))}
             </RadioGroup>
           )}
 
           <div className="mt-5 flex flex-wrap gap-3">
-            <Button variant="secondary" onClick={() => setStep("service-area")}>
+            <Button
+              variant="secondary"
+              onClick={() => setStep("service-area")}
+              data-agent-action="back-to-service-area-check"
+            >
               Back to service area check
             </Button>
             <Button
