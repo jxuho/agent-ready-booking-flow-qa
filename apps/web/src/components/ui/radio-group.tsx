@@ -15,12 +15,14 @@ export function RadioGroup({ children, className, legend, ...props }: RadioGroup
 }
 
 type RadioOptionProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  children?: React.ReactNode;
   label: string;
   description?: string;
   descriptionId?: string;
 };
 
 export function RadioOption({
+  children,
   className,
   description,
   descriptionId,
@@ -44,6 +46,7 @@ export function RadioOption({
             {description}
           </span>
         )}
+        {children}
       </span>
     </label>
   );

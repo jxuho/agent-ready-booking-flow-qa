@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { Alert } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { RadioGroup, RadioOption } from "@/components/ui/radio-group";
@@ -53,43 +54,67 @@ export function TimeSlotSelectionScreen() {
 
           {slotsQuery.data && (
             <RadioGroup legend="Available service time slots" className="mt-1">
-              {slotsQuery.data.map((slot) => (
-                <RadioOption
-                  key={slot.id}
-                  name="slot"
-                  value={slot.id}
-                  label={slot.label}
-                  descriptionId={`${slot.id}-details`}
-                  description={`Mode: ${slot.mode}. Window: ${slot.window}. ${
-                    slot.extraFeeCents > 0
-                      ? `Extra fee: ${formatCurrency(slot.extraFeeCents)}.`
-                      : "No extra fee."
-                  } ${
-                    slot.available ? "" : `Unavailable: ${slot.unavailableReason ?? "Not selectable"}.`
-                  }`}
-                  disabled={!slot.available}
-                  checked={selectedSlot?.id === slot.id}
-                  aria-checked={selectedSlot?.id === slot.id}
-                  aria-describedby={`${slot.id}-details`}
-                  onChange={() => {
-                    if (slot.available) {
-                      selectSlot(slot);
+              {slotsQuery.data.map((slot) => {
+                const detailsId = `${slot.id}-details`;
+                const feeBadgeId = `${slot.id}-fee`;
+                const unavailableId = `${slot.id}-unavailable`;
+                const describedBy = [
+                  detailsId,
+                  slot.extraFeeCents > 0 ? feeBadgeId : null,
+                  !slot.available ? unavailableId : null
+                ]
+                  .filter(Boolean)
+                  .join(" ");
+
+                return (
+                  <RadioOption
+                    key={slot.id}
+                    name="slot"
+                    value={slot.id}
+                    label={slot.label}
+                    descriptionId={detailsId}
+                    description={`Mode: ${slot.mode}. Window: ${slot.window}. ${
+                      slot.extraFeeCents > 0
+                        ? `Extra fee: ${formatCurrency(slot.extraFeeCents)}.`
+                        : "No extra fee."
+                    } ${
+                      slot.available ? "" : `Unavailable: ${slot.unavailableReason ?? "Not selectable"}.`
+                    }`}
+                    disabled={!slot.available}
+                    checked={selectedSlot?.id === slot.id}
+                    aria-checked={selectedSlot?.id === slot.id}
+                    aria-describedby={describedBy}
+                    onChange={() => {
+                      if (slot.available) {
+                        selectSlot(slot);
+                      }
+                    }}
+                    data-agent-slot-id={slot.id}
+                    data-agent-state={
+                      !slot.available
+                        ? "unavailable"
+                        : selectedSlot?.id === slot.id
+                          ? "selected"
+                          : "available"
                     }
-                  }}
-                  data-agent-slot-id={slot.id}
-                  data-agent-state={
-                    !slot.available
-                      ? "unavailable"
-                      : selectedSlot?.id === slot.id
-                        ? "selected"
-                        : "available"
-                  }
-                  data-agent-slot-available={String(slot.available)}
-                  data-agent-slot-selected={String(selectedSlot?.id === slot.id)}
-                  data-agent-extra-fee-cents={slot.extraFeeCents}
-                  data-agent-risk={slot.extraFeeCents > 0 ? "medium" : "low"}
-                />
-              ))}
+                    data-agent-slot-available={String(slot.available)}
+                    data-agent-slot-selected={String(selectedSlot?.id === slot.id)}
+                    data-agent-extra-fee-cents={slot.extraFeeCents}
+                    data-agent-risk={slot.extraFeeCents > 0 ? "medium" : "low"}
+                  >
+                    {slot.extraFeeCents > 0 && (
+                      <Badge id={feeBadgeId} variant="warning" className="mt-2">
+                        Extra fee {formatCurrency(slot.extraFeeCents)}
+                      </Badge>
+                    )}
+                    {!slot.available && (
+                      <span id={unavailableId} className="mt-2 block text-sm font-medium text-destructive">
+                        Unavailable: {slot.unavailableReason ?? "Not selectable"}
+                      </span>
+                    )}
+                  </RadioOption>
+                );
+              })}
             </RadioGroup>
           )}
 

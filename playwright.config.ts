@@ -10,7 +10,9 @@ export default defineConfig({
   },
   use: {
     baseURL,
-    trace: "on-first-retry"
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure"
   },
   webServer: {
     command: "npm --workspace apps/web run dev -- --host 0.0.0.0 --port 5174 --strictPort",

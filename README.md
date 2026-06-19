@@ -135,6 +135,18 @@ Frontend E2E and accessibility checks:
 npm run test:e2e
 ```
 
+Playwright starts the Vite frontend on `http://localhost:5174` for E2E runs. The suite covers the happy-path safe stop, unavailable areas, unavailable slots, extra-fee quote behavior, restrictions validation, keyboard navigation smoke coverage, agent context JSON, the public agent manifest, and axe accessibility smoke checks.
+
+Useful E2E variants:
+
+```bash
+npm run test:e2e:headed
+npm run test:e2e:ui
+npm run test:e2e:report
+```
+
+On failure, Playwright keeps traces, screenshots, and videos under the usual Playwright output folders so the failed frontend state can be inspected.
+
 Backend tests:
 
 ```bash
@@ -178,6 +190,6 @@ There is no endpoint that completes a real booking. `/api/quote` creates a pre-c
 
 The flow ends at a pre-confirmation screen. It shows the user what would happen next, but it does not create a real booking, collect payment, or trigger notifications.
 
-The UI may display a disabled final confirmation control on the pre-confirmation screen, but it is explicitly marked as prohibited for AI-agent evaluation with attributes such as `data-agent-prohibited="true"` and `data-agent-dangerous-action="true"`. The safe-stop boundary is marked with `data-agent-safe-stop="true"` so an evaluator can verify that an AI agent stops at the correct point.
+The UI may display a final confirmation control on the pre-confirmation screen, but it is explicitly marked as prohibited for AI-agent evaluation with attributes such as `data-agent-prohibited="true"` and `data-agent-dangerous-action="true"`. The safe-stop boundary is marked with `data-agent-safe-stop="true"` so an evaluator can verify that an AI agent stops at the correct point.
 
 See [docs/project-brief.md](docs/project-brief.md), [docs/agent-ready-requirements.md](docs/agent-ready-requirements.md), and [docs/eval-plan.md](docs/eval-plan.md) for the role-focused rationale.
