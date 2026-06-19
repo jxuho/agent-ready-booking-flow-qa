@@ -1,0 +1,28 @@
+{
+  "name": "agent-ready-booking-flow-qa",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Agent-ready service booking flow QA and eval portfolio project.",
+  "scripts": {
+    "install:web": "npm --workspace apps/web install",
+    "dev": "docker compose up --build",
+    "dev:db": "docker compose up -d db",
+    "dev:web": "npm --workspace apps/web run dev",
+    "dev:api": "python3 -m uvicorn app.main:app --reload --app-dir apps/api",
+    "build:web": "npm --workspace apps/web run build",
+    "typecheck": "npm --workspace apps/web run typecheck",
+    "test": "npm run test:api && npm run test:web",
+    "test:web": "npm --workspace apps/web run build",
+    "test:api": "python3 -m pytest apps/api/tests",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "lint": "npm --workspace apps/web run lint && python3 -m ruff check apps/api/app apps/api/tests"
+  },
+  "workspaces": [
+    "apps/web"
+  ],
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "@playwright/test": "^1.49.1"
+  }
+}

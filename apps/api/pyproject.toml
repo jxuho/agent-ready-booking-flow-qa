@@ -1,0 +1,39 @@
+[project]
+name = "booking-eval-api"
+version = "0.1.0"
+description = "FastAPI backend for the agent-ready booking flow QA testbed."
+requires-python = ">=3.10"
+dependencies = [
+  "alembic>=1.14.0",
+  "fastapi==0.115.6",
+  "psycopg[binary]>=3.2.3",
+  "pydantic>=2.10.4",
+  "pydantic-settings>=2.7.0",
+  "sqlalchemy>=2.0.36",
+  "starlette>=0.41.3,<0.42.0",
+  "uvicorn[standard]>=0.34.0"
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.27.0,<0.28.0",
+  "pytest>=8.3.4",
+  "pytest-asyncio>=0.25.0",
+  "ruff>=0.8.4"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
